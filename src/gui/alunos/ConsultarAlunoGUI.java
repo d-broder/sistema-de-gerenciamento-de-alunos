@@ -1,6 +1,7 @@
 package gui.alunos;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -15,15 +16,19 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import dao.AlunoDAO;
+import gui.MainGUI;
 import modelo.Aluno;
 
 public class ConsultarAlunoGUI extends JFrame {
     private JTextField consultaTextField;
     private JButton consultarButton;
+    private JButton limparFiltroButton; // Botão para limpar o filtro
     private JTable tabelaAlunos;
     private JScrollPane scrollPane;
+    private JButton voltarButton; // Botão para voltar
 
     private AlunoDAO alunoDAO;
+    private List<Aluno> todosAlunos; // Lista de todos os alunos no banco de dados
 
     public ConsultarAlunoGUI() {
         // Set up the frame
@@ -38,8 +43,10 @@ public class ConsultarAlunoGUI extends JFrame {
         // Criando os componentes
         consultaTextField = new JTextField(20);
         consultarButton = new JButton("Consultar");
+        limparFiltroButton = new JButton("Limpar Filtro"); // Inicializar o botão
         tabelaAlunos = new JTable();
         scrollPane = new JScrollPane(tabelaAlunos);
+        voltarButton = new JButton("Voltar"); // Inicializar o botão
 
         // Criando o painel principal
         JPanel mainPanel = new JPanel();
@@ -50,6 +57,7 @@ public class ConsultarAlunoGUI extends JFrame {
         consultaPanel.add(new JLabel("CPF ou Nome:"));
         consultaPanel.add(consultaTextField);
         consultaPanel.add(consultarButton);
+        consultaPanel.add(limparFiltroButton); // Adicionar o botão no painel
 
         // Adicionando o painel de consulta ao painel principal
         mainPanel.add(consultaPanel, BorderLayout.NORTH);
@@ -57,10 +65,18 @@ public class ConsultarAlunoGUI extends JFrame {
         // Adicionando a tabela ao painel principal
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
+        // Criando o painel de botões
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(voltarButton);
+
+        // Adicionando o painel de botões ao painel principal na parte inferior
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
         // Add the panel to the frame
         add(mainPanel);
 
-        // Add an action listener to the consultarButton
+        // Add action listeners
         consultarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -68,14 +84,37 @@ public class ConsultarAlunoGUI extends JFrame {
             }
         });
 
+        // Adicionar um ActionListener para o botão de limpar filtro
+        limparFiltroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Limpar o texto do campo de consulta
+                consultaTextField.setText("");
+                // Recarregar todos os alunos no banco de dados
+                popularTabela(todosAlunos);
+            }
+        });
+
+        // Adicionar um ActionListener para o botão "Voltar"
+        voltarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                voltarParaMainGUI();
+            }
+        });
+
+        // Carregar todos os alunos ao abrir a GUI
+        todosAlunos = alunoDAO.consultarTodos(); // Método fictício para obter todos os alunos
+        popularTabela(todosAlunos);
+
         // Display the frame
         setVisible(true);
     }
 
     private void consultarAlunos() {
         String termo = consultaTextField.getText();
-        List<Aluno> alunos = alunoDAO.consultar(termo);
-        popularTabela(alunos);
+        List<Aluno> alunosFiltrados = alunoDAO.consultar(termo);
+        popularTabela(alunosFiltrados);
     }
 
     private void popularTabela(List<Aluno> alunos) {
@@ -97,6 +136,11 @@ public class ConsultarAlunoGUI extends JFrame {
         }
 
         tabelaAlunos.setModel(model);
+    }
+
+    private void voltarParaMainGUI() {
+        new MainGUI(); // Abre uma nova instância de MainGUI
+        dispose(); // Fecha a instância atual de ConsultarAlunoGUI
     }
 
     public static void main(String[] args) {

@@ -1,5 +1,7 @@
 package gui.alunos;
 
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +9,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import dao.AlunoDAO;
+import gui.MainGUI;
 import modelo.Aluno;
 
 public class AtualizarAlunoGUI extends JFrame {
@@ -25,7 +30,7 @@ public class AtualizarAlunoGUI extends JFrame {
     private JTextField pesoTextField;
     private JTextField alturaTextField;
     private JButton atualizarButton;
-    private JButton sairButton;
+    private JButton voltarButton; // Alteração do botão "Sair" para "Voltar"
 
     private AlunoDAO alunoDAO;
 
@@ -33,45 +38,48 @@ public class AtualizarAlunoGUI extends JFrame {
         // Set up the frame
         setTitle("Atualizar Aluno");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 240); // Adjusted height to fit the content
+        setSize(440, 240);
         setLocationRelativeTo(null);
 
-        // Create the components
-        cpfTextField = new JTextField(20);
-        nomeTextField = new JTextField(20);
-        dataNascimentoTextField = new JTextField(20);
-        pesoTextField = new JTextField(20);
-        alturaTextField = new JTextField(20);
-        atualizarButton = new JButton("Atualizar");
-        sairButton = new JButton("Sair");
+        // Create labels
+        JLabel cpfLabel = createLabel("CPF do Aluno:");
+        JLabel nomeLabel = createLabel("Novo Nome:");
+        JLabel dataNascimentoLabel = createLabel("Nova Data de Nascimento:");
+        JLabel pesoLabel = createLabel("Novo Peso:");
+        JLabel alturaLabel = createLabel("Nova Altura:");
 
-        // Criando o painel principal
+        // Create text fields
+        cpfTextField = createTextField();
+        nomeTextField = createTextField();
+        dataNascimentoTextField = createTextField();
+        pesoTextField = createTextField();
+        alturaTextField = createTextField();
+
+        // Create buttons
+        atualizarButton = new JButton("Atualizar");
+        voltarButton = new JButton("Voltar");
+
+        // Create main panel
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Adicionando os componentes ao painel principal
-        mainPanel.add(createPanel(new JLabel("CPF do Aluno:"), cpfTextField));
-        mainPanel.add(createPanel(new JLabel("Novo Nome:"), nomeTextField));
-        mainPanel.add(createPanel(new JLabel("Nova Data de Nascimento:"), dataNascimentoTextField));
-        mainPanel.add(createPanel(new JLabel("Novo Peso:"), pesoTextField));
-        mainPanel.add(createPanel(new JLabel("Nova Altura:"), alturaTextField));
+        // Add components to main panel
+        mainPanel.add(createPanel(cpfLabel, cpfTextField));
+        mainPanel.add(createPanel(nomeLabel, nomeTextField));
+        mainPanel.add(createPanel(dataNascimentoLabel, dataNascimentoTextField));
+        mainPanel.add(createPanel(pesoLabel, pesoTextField));
+        mainPanel.add(createPanel(alturaLabel, alturaTextField));
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(createButtonPanel());
 
-        // Criando um painel para os botões
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.add(atualizarButton);
-        buttonPanel.add(sairButton);
-
-        // Adicionando o painel de botões ao painel principal
-        mainPanel.add(buttonPanel);
-
-        // Add the panel to the frame
+        // Add main panel to the frame
         add(mainPanel);
 
         // Initialize AlunoDAO
         alunoDAO = new AlunoDAO();
 
-        // Add an action listener to the atualizarButton
+        // Initialize buttons' action listeners
         atualizarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -79,11 +87,10 @@ public class AtualizarAlunoGUI extends JFrame {
             }
         });
 
-        // Add an action listener to the sairButton
-        sairButton.addActionListener(new ActionListener() {
+        voltarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                voltarParaMainGUI();
             }
         });
 
@@ -91,13 +98,36 @@ public class AtualizarAlunoGUI extends JFrame {
         setVisible(true);
     }
 
-    // Método auxiliar para criar painéis com rótulo e campo de texto
-    private static JPanel createPanel(JLabel label, JTextField textField) {
+    private JLabel createLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setPreferredSize(new Dimension(150, 30));
+        return label;
+    }
+
+    private JTextField createTextField() {
+        JTextField textField = new JTextField(20);
+        textField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return textField;
+    }
+
+    private JPanel createPanel(Component component1, Component component2) {
         JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(label);
-        panel.add(textField);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(Box.createHorizontalStrut(10));
+        panel.add(component1);
+        panel.add(Box.createHorizontalStrut(10));
+        panel.add(component2);
+        panel.add(Box.createHorizontalStrut(10));
         return panel;
+    }
+
+    private JPanel createButtonPanel() {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(atualizarButton);
+        buttonPanel.add(voltarButton);
+        return buttonPanel;
     }
 
     private void atualizarAluno() {
@@ -147,6 +177,11 @@ public class AtualizarAlunoGUI extends JFrame {
         // Exibindo uma mensagem de sucesso
         JOptionPane.showMessageDialog(null, "Aluno com CPF " + cpf + " atualizado com sucesso.", "Sucesso",
                 JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void voltarParaMainGUI() {
+        new MainGUI(); // Abre uma nova instância de MainGUI
+        dispose(); // Fecha a instância atual de AtualizarAlunoGUI
     }
 
     public static void main(String[] args) {

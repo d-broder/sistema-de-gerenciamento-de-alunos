@@ -1,5 +1,7 @@
 package gui.alunos;
 
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +9,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import dao.AlunoDAO;
+import gui.MainGUI;
 import modelo.Aluno;
 
 public class InserirAlunoGUI extends JFrame {
@@ -26,7 +31,7 @@ public class InserirAlunoGUI extends JFrame {
     private JTextField alturaTextField;
     private JButton cadastrarButton;
     private JButton limparButton;
-    private JButton sairButton;
+    private JButton voltarButton; // Adicionando o botão "Voltar"
 
     private AlunoDAO alunoDAO;
 
@@ -34,38 +39,46 @@ public class InserirAlunoGUI extends JFrame {
         // Set up the frame
         setTitle("Cadastro de Aluno");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 240); // Ajusted height to fit the content
+        setSize(440, 240);
         setLocationRelativeTo(null);
 
         // Initialize AlunoDAO
         alunoDAO = new AlunoDAO();
 
-        // Create the components
-        cpfTextField = new JTextField(20);
-        nomeTextField = new JTextField(20);
-        dataNascimentoTextField = new JTextField(20);
-        pesoTextField = new JTextField(20);
-        alturaTextField = new JTextField(20);
+        // Create labels
+        JLabel cpfLabel = createLabel("CPF do Aluno:");
+        JLabel nomeLabel = createLabel("Nome:");
+        JLabel dataNascimentoLabel = createLabel("Data de Nascimento:");
+        JLabel pesoLabel = createLabel("Peso:");
+        JLabel alturaLabel = createLabel("Altura:");
+
+        // Create text fields
+        cpfTextField = createTextField();
+        nomeTextField = createTextField();
+        dataNascimentoTextField = createTextField();
+        pesoTextField = createTextField();
+        alturaTextField = createTextField();
+
+        // Create buttons
         cadastrarButton = new JButton("Cadastrar");
         limparButton = new JButton("Limpar");
-        sairButton = new JButton("Sair");
+        voltarButton = new JButton("Voltar");
 
         // Criando o painel principal
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Adicionando os componentes ao painel principal
-        mainPanel.add(createPanel("CPF:", cpfTextField));
-        mainPanel.add(createPanel("Nome:", nomeTextField));
-        mainPanel.add(createPanel("Data de Nascimento:", dataNascimentoTextField));
-        mainPanel.add(createPanel("Peso:", pesoTextField));
-        mainPanel.add(createPanel("Altura:", alturaTextField));
+        mainPanel.add(createPanel(cpfLabel, cpfTextField));
+        mainPanel.add(createPanel(nomeLabel, nomeTextField));
+        mainPanel.add(createPanel(dataNascimentoLabel, dataNascimentoTextField));
+        mainPanel.add(createPanel(pesoLabel, pesoTextField));
+        mainPanel.add(createPanel(alturaLabel, alturaTextField));
+        mainPanel.add(Box.createVerticalStrut(10));
 
         // Adicionando botões ao painel principal
         mainPanel.add(createButtonPanel());
-
-        // Add the panel to the frame
-        add(mainPanel);
 
         // Add action listeners to buttons
         cadastrarButton.addActionListener(new ActionListener() {
@@ -82,22 +95,40 @@ public class InserirAlunoGUI extends JFrame {
             }
         });
 
-        sairButton.addActionListener(new ActionListener() {
+        // Add action listener to "Voltar" button
+        voltarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                voltarParaMainGUI();
             }
         });
 
         // Display the frame
+        add(mainPanel);
         setVisible(true);
     }
 
-    private JPanel createPanel(String labelText, JTextField textField) {
+    private JLabel createLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setPreferredSize(new Dimension(150, 30));
+        return label;
+    }
+
+    private JTextField createTextField() {
+        JTextField textField = new JTextField(20);
+        textField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return textField;
+    }
+
+    private JPanel createPanel(Component component1, Component component2) {
         JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(new JLabel(labelText));
-        panel.add(textField);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(Box.createHorizontalStrut(10));
+        panel.add(component1);
+        panel.add(Box.createHorizontalStrut(10));
+        panel.add(component2);
+        panel.add(Box.createHorizontalStrut(10));
         return panel;
     }
 
@@ -106,7 +137,7 @@ public class InserirAlunoGUI extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(cadastrarButton);
         buttonPanel.add(limparButton);
-        buttonPanel.add(sairButton);
+        buttonPanel.add(voltarButton);
         return buttonPanel;
     }
 
@@ -154,6 +185,11 @@ public class InserirAlunoGUI extends JFrame {
         dataNascimentoTextField.setText("");
         pesoTextField.setText("");
         alturaTextField.setText("");
+    }
+
+    private void voltarParaMainGUI() {
+        new MainGUI(); // Abre uma nova instância de MainGUI
+        dispose(); // Fecha a instância atual de InserirAlunoGUI
     }
 
     public static void main(String[] args) {

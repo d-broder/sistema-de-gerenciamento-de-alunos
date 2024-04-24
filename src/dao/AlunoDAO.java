@@ -45,6 +45,23 @@ public class AlunoDAO {
         }
     }
 
+    public boolean verificarExistencia(String cpf) {
+        String sql = "SELECT COUNT(*) AS count FROM aluno WHERE cpf = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, cpf);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt("count");
+                return count > 0; // Retorna true se o contador for maior que zero, indicando que o aluno existe
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false; // Se nenhum aluno for encontrado com o CPF fornecido
+    }
+
     public void atualizar(Aluno aluno) {
         String sql = "UPDATE aluno SET nome = ?, data_nascimento = ?, peso = ?, altura = ? WHERE cpf = ?";
         try {
@@ -105,5 +122,27 @@ public class AlunoDAO {
             throw new RuntimeException(e);
         }
         return null; // Se nenhum aluno for encontrado com o CPF fornecido
+    }
+
+    public List<Aluno> consultarTodos() {
+        List<Aluno> alunos = new ArrayList<>();
+        String sql = "SELECT * FROM aluno";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Aluno aluno = new Aluno();
+                aluno.setCpf(rs.getString("cpf"));
+                aluno.setNome(rs.getString("nome"));
+                aluno.setDataNascimento(rs.getDate("data_nascimento"));
+                aluno.setPeso(rs.getDouble("peso"));
+                aluno.setAltura(rs.getDouble("altura"));
+                alunos.add(aluno);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return alunos;
     }
 }

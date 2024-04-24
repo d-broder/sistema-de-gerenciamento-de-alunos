@@ -1,6 +1,7 @@
 package gui;
 
-import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,20 +19,31 @@ public class MainGUI extends JFrame {
     private JButton btnConsultar;
     private JButton btnExcluir;
     private JButton btnInserir;
+    private JButton btnSair;
 
     public MainGUI() {
         setTitle("Gerenciamento de Alunos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 200);
+        setSize(350, 250);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1));
+        panel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
         btnInserir = new JButton("Inserir Aluno");
         btnExcluir = new JButton("Excluir Aluno");
         btnAtualizar = new JButton("Atualizar Aluno");
         btnConsultar = new JButton("Consultar Aluno");
+        btnSair = new JButton("Sair");
+
+        int width = 220;
+        int height = 30;
+
+        btnInserir.setPreferredSize(new Dimension(width, height));
+        btnExcluir.setPreferredSize(new Dimension(width, height));
+        btnAtualizar.setPreferredSize(new Dimension(width, height));
+        btnConsultar.setPreferredSize(new Dimension(width, height));
+        btnSair.setPreferredSize(new Dimension(100, height));
 
         btnInserir.addActionListener(new ActionListener() {
             @Override
@@ -61,10 +73,18 @@ public class MainGUI extends JFrame {
             }
         });
 
+        btnSair.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
         panel.add(btnInserir);
         panel.add(btnExcluir);
         panel.add(btnAtualizar);
         panel.add(btnConsultar);
+        panel.add(btnSair);
 
         add(panel);
         setVisible(true);
@@ -73,21 +93,25 @@ public class MainGUI extends JFrame {
     private void openInserirAlunoGUI() {
         InserirAlunoGUI inserirAlunoGUI = new InserirAlunoGUI();
         inserirAlunoGUI.setVisible(true);
+        dispose();
     }
 
     private void openExcluirAlunoGUI() {
         ExcluirAlunoGUI excluirAlunoGUI = new ExcluirAlunoGUI();
         excluirAlunoGUI.setVisible(true);
+        dispose();
     }
 
     private void openAtualizarAlunoGUI() {
         AtualizarAlunoGUI atualizarAlunoGUI = new AtualizarAlunoGUI();
         atualizarAlunoGUI.setVisible(true);
+        dispose();
     }
 
     private void openConsultarAlunoGUI() {
         ConsultarAlunoGUI consultarAlunoGUI = new ConsultarAlunoGUI();
         consultarAlunoGUI.setVisible(true);
+        dispose();
     }
 
     public static void main(String[] args) {
