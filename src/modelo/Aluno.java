@@ -9,6 +9,14 @@ public class Aluno {
     private double peso;
     private double altura;
 
+    public Aluno(String cpf, String nome, Date dataNascimento, double peso, double altura) {
+        this.cpf = cpf;
+        this.nome = nome;
+        this.dataNascimento = dataNascimento;
+        this.peso = peso;
+        this.altura = altura;
+    }
+
     // Getters e Setters
     public String getCpf() {
         return cpf;

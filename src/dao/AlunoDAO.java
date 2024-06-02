@@ -14,7 +14,7 @@ public class AlunoDAO {
     private Connection connection;
 
     public AlunoDAO() {
-        this.connection = new ConnectionFactory().getConnection();
+        this.connection = ConnectionFactory.getConnection();
     }
 
     public void inserir(Aluno aluno) {
@@ -88,12 +88,12 @@ public class AlunoDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Aluno aluno = new Aluno();
-                aluno.setCpf(rs.getString("cpf"));
-                aluno.setNome(rs.getString("nome"));
-                aluno.setDataNascimento(rs.getDate("data_nascimento"));
-                aluno.setPeso(rs.getDouble("peso"));
-                aluno.setAltura(rs.getDouble("altura"));
+                Aluno aluno = new Aluno(
+                        rs.getString("cpf"),
+                        rs.getString("nome"),
+                        rs.getDate("data_nascimento"),
+                        rs.getDouble("peso"),
+                        rs.getDouble("altura"));
                 alunos.add(aluno);
             }
         } catch (SQLException e) {
@@ -110,12 +110,12 @@ public class AlunoDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                Aluno aluno = new Aluno();
-                aluno.setCpf(rs.getString("cpf"));
-                aluno.setNome(rs.getString("nome"));
-                aluno.setDataNascimento(rs.getDate("data_nascimento"));
-                aluno.setPeso(rs.getDouble("peso"));
-                aluno.setAltura(rs.getDouble("altura"));
+                Aluno aluno = new Aluno(
+                        rs.getString("cpf"),
+                        rs.getString("nome"),
+                        rs.getDate("data_nascimento"),
+                        rs.getDouble("peso"),
+                        rs.getDouble("altura"));
                 return aluno;
             }
         } catch (SQLException e) {
@@ -132,12 +132,12 @@ public class AlunoDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Aluno aluno = new Aluno();
-                aluno.setCpf(rs.getString("cpf"));
-                aluno.setNome(rs.getString("nome"));
-                aluno.setDataNascimento(rs.getDate("data_nascimento"));
-                aluno.setPeso(rs.getDouble("peso"));
-                aluno.setAltura(rs.getDouble("altura"));
+                Aluno aluno = new Aluno(
+                        rs.getString("cpf"),
+                        rs.getString("nome"),
+                        rs.getDate("data_nascimento"),
+                        rs.getDouble("peso"),
+                        rs.getDouble("altura"));
                 alunos.add(aluno);
             }
         } catch (SQLException e) {

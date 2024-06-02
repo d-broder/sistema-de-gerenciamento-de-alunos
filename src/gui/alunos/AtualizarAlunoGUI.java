@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import dao.AlunoDAO;
-import gui.MainGUI;
+import gui.AlunoGUI;
 import modelo.Aluno;
 
 public class AtualizarAlunoGUI extends JFrame {
@@ -147,8 +147,7 @@ public class AtualizarAlunoGUI extends JFrame {
         }
 
         // Criar um objeto Aluno com os novos dados
-        Aluno aluno = new Aluno();
-        aluno.setCpf(cpf);
+        Aluno aluno = new Aluno(null, null, null, 0, 0);
         aluno.setNome(nomeTextField.getText().isEmpty() ? alunoAtual.getNome() : nomeTextField.getText());
 
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -180,7 +179,7 @@ public class AtualizarAlunoGUI extends JFrame {
     }
 
     private void voltarParaMainGUI() {
-        new MainGUI(); // Abre uma nova instância de MainGUI
+        new AlunoGUI(); // Abre uma nova instância de MainGUI
         dispose(); // Fecha a instância atual de AtualizarAlunoGUI
     }
 

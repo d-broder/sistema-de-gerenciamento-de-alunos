@@ -8,14 +8,17 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class ConnectionFactory {
-    public Connection getConnection() {
-        Properties prop = new Properties();
+    private static Properties prop = new Properties();
+
+    static {
         try (FileInputStream input = new FileInputStream("res/config.properties")) {
             prop.load(input);
         } catch (IOException e) {
             throw new RuntimeException("Error loading config.properties file", e);
         }
+    }
 
+    public static Connection getConnection() {
         String url = prop.getProperty("url");
         String username = prop.getProperty("username");
         String password = prop.getProperty("password");

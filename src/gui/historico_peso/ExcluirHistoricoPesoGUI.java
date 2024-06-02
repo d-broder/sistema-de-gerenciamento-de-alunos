@@ -1,4 +1,4 @@
-package gui.alunos;
+package gui.historico_peso;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -16,59 +16,46 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import dao.AlunoDAO;
-import gui.AlunoGUI;
-import modelo.Aluno;
+import dao.HistoricoPesoDAO;
+import gui.HistoricoPesoGUI;
 
-public class ExcluirAlunoGUI extends JFrame {
-    private JTextField cpfTextField;
+public class ExcluirHistoricoPesoGUI extends JFrame {
+    private JTextField idTextField;
     private JButton excluirButton;
-    private JButton voltarButton; // Alteração do botão "Sair" para "Voltar"
+    private JButton voltarButton;
 
-    private AlunoDAO alunoDAO;
+    private HistoricoPesoDAO historicoPesoDAO;
 
-    public ExcluirAlunoGUI() {
-        // Set up the frame
-        setTitle("Excluir Aluno");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 140); // Adjusted height to fit the content
+    public ExcluirHistoricoPesoGUI() {
+        setTitle("Excluir Histórico de Peso");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(300, 150);
         setLocationRelativeTo(null);
 
-        // Create labels
-        JLabel cpfLabel = createLabel("CPF do Aluno:");
+        historicoPesoDAO = new HistoricoPesoDAO();
 
-        // Create text fields
-        cpfTextField = createTextField();
+        JLabel idLabel = createLabel("ID do Histórico:");
 
-        // Create buttons
+        idTextField = createTextField();
+
         excluirButton = new JButton("Excluir");
         voltarButton = new JButton("Voltar");
 
-        // Criate main panel
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Add components to main panel
-        mainPanel.add(createPanel(cpfLabel, cpfTextField));
+        mainPanel.add(createPanel(idLabel, idTextField));
         mainPanel.add(Box.createVerticalStrut(10));
         mainPanel.add(createButtonPanel());
 
-        // Add the panel to the frame
-        add(mainPanel);
-
-        // Initialize AlunoDAO
-        alunoDAO = new AlunoDAO();
-
-        // Add an action listener to the excluirButton
         excluirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                excluirAluno();
+                excluirHistoricoPeso();
             }
         });
 
-        // Add an action listener to the voltarButton
         voltarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -76,7 +63,7 @@ public class ExcluirAlunoGUI extends JFrame {
             }
         });
 
-        // Display the frame
+        add(mainPanel);
         setVisible(true);
     }
 
@@ -112,39 +99,28 @@ public class ExcluirAlunoGUI extends JFrame {
         return buttonPanel;
     }
 
-    private void excluirAluno() {
-        String cpf = cpfTextField.getText();
-        if (cpf.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "O CPF do aluno não pode ser vazio.", "Erro",
+    private void excluirHistoricoPeso() {
+        String idText = idTextField.getText();
+        if (idText.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "O ID do histórico não pode ser vazio.", "Erro",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Verificar se o CPF existe no banco de dados
-        if (!alunoDAO.verificarExistencia(cpf)) {
-            JOptionPane.showMessageDialog(null, "O CPF informado não corresponde a nenhum aluno.", "Erro",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        int id = Integer.parseInt(idText);
 
-        // Criar um objeto Aluno com apenas o CPF preenchido
-        Aluno aluno = new Aluno(null, null, null, 0, 0);
-        aluno.setCpf(cpf);
+        historicoPesoDAO.excluir(id);
 
-        // Excluir o aluno usando AlunoDAO
-        alunoDAO.excluir(aluno);
-
-        // Exibindo uma mensagem de sucesso
-        JOptionPane.showMessageDialog(null, "Aluno com CPF " + cpf + " excluído com sucesso.", "Sucesso",
+        JOptionPane.showMessageDialog(null, "Histórico com ID " + id + " excluído com sucesso.", "Sucesso",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void voltarParaMainGUI() {
-        new AlunoGUI(); // Abre uma nova instância de MainGUI
-        dispose(); // Fecha a instância atual de ExcluirAlunoGUI
+        new HistoricoPesoGUI(); // Abre uma nova instância de MainGUI
+        dispose(); // Fecha a instância atual de ExcluirHistoricoPesoGUI
     }
 
     public static void main(String[] args) {
-        new ExcluirAlunoGUI();
+        new ExcluirHistoricoPesoGUI();
     }
 }

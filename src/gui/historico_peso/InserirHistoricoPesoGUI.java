@@ -1,4 +1,4 @@
-package gui.alunos;
+package gui.historico_peso;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -19,72 +19,54 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import dao.AlunoDAO;
-import gui.AlunoGUI;
-import modelo.Aluno;
+import dao.HistoricoPesoDAO;
+import gui.HistoricoPesoGUI;
+import modelo.HistoricoPeso;
 
-public class InserirAlunoGUI extends JFrame {
-    private JTextField cpfTextField;
-    private JTextField nomeTextField;
-    private JTextField dataNascimentoTextField;
+public class InserirHistoricoPesoGUI extends JFrame {
+    private JTextField cpfAlunoTextField;
+    private JTextField dataTextField;
     private JTextField pesoTextField;
-    private JTextField alturaTextField;
     private JButton cadastrarButton;
     private JButton limparButton;
-    private JButton voltarButton; // Adicionando o botão "Voltar"
+    private JButton voltarButton;
 
-    private AlunoDAO alunoDAO;
+    private HistoricoPesoDAO historicoPesoDAO;
 
-    public InserirAlunoGUI() {
-        // Set up the frame
-        setTitle("Cadastro de Aluno");
+    public InserirHistoricoPesoGUI() {
+        setTitle("Cadastro de Histórico de Peso");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(440, 240);
         setLocationRelativeTo(null);
 
-        // Initialize AlunoDAO
-        alunoDAO = new AlunoDAO();
+        historicoPesoDAO = new HistoricoPesoDAO();
 
-        // Create labels
-        JLabel cpfLabel = createLabel("CPF do Aluno:");
-        JLabel nomeLabel = createLabel("Nome:");
-        JLabel dataNascimentoLabel = createLabel("Data de Nascimento:");
+        JLabel cpfAlunoLabel = createLabel("CPF do Aluno:");
+        JLabel dataLabel = createLabel("Data:");
         JLabel pesoLabel = createLabel("Peso:");
-        JLabel alturaLabel = createLabel("Altura:");
 
-        // Create text fields
-        cpfTextField = createTextField();
-        nomeTextField = createTextField();
-        dataNascimentoTextField = createTextField();
+        cpfAlunoTextField = createTextField();
+        dataTextField = createTextField();
         pesoTextField = createTextField();
-        alturaTextField = createTextField();
 
-        // Create buttons
         cadastrarButton = new JButton("Cadastrar");
         limparButton = new JButton("Limpar");
         voltarButton = new JButton("Voltar");
 
-        // Criando o painel principal
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Adicionando os componentes ao painel principal
-        mainPanel.add(createPanel(cpfLabel, cpfTextField));
-        mainPanel.add(createPanel(nomeLabel, nomeTextField));
-        mainPanel.add(createPanel(dataNascimentoLabel, dataNascimentoTextField));
+        mainPanel.add(createPanel(cpfAlunoLabel, cpfAlunoTextField));
+        mainPanel.add(createPanel(dataLabel, dataTextField));
         mainPanel.add(createPanel(pesoLabel, pesoTextField));
-        mainPanel.add(createPanel(alturaLabel, alturaTextField));
         mainPanel.add(Box.createVerticalStrut(10));
-
-        // Adicionando botões ao painel principal
         mainPanel.add(createButtonPanel());
 
-        // Add action listeners to buttons
         cadastrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cadastrarAluno();
+                cadastrarHistoricoPeso();
             }
         });
 
@@ -95,7 +77,6 @@ public class InserirAlunoGUI extends JFrame {
             }
         });
 
-        // Add action listener to "Voltar" button
         voltarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -103,7 +84,6 @@ public class InserirAlunoGUI extends JFrame {
             }
         });
 
-        // Display the frame
         add(mainPanel);
         setVisible(true);
     }
@@ -141,58 +121,51 @@ public class InserirAlunoGUI extends JFrame {
         return buttonPanel;
     }
 
-    private void cadastrarAluno() {
+    private void cadastrarHistoricoPeso() {
         if (camposVazios()) {
             JOptionPane.showMessageDialog(null, "Todos os campos devem ser preenchidos.", "Erro",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        Aluno aluno = criarAluno();
-        alunoDAO.inserir(aluno);
-        JOptionPane.showMessageDialog(null, "Aluno cadastrado com sucesso.", "Sucesso",
+        HistoricoPeso historicoPeso = criarHistoricoPeso();
+        historicoPesoDAO.inserir(historicoPeso);
+        JOptionPane.showMessageDialog(null, "Histórico de peso cadastrado com sucesso.", "Sucesso",
                 JOptionPane.INFORMATION_MESSAGE);
         limparCampos();
     }
 
     private boolean camposVazios() {
-        return cpfTextField.getText().isEmpty() || nomeTextField.getText().isEmpty() ||
-                dataNascimentoTextField.getText().isEmpty() || pesoTextField.getText().isEmpty() ||
-                alturaTextField.getText().isEmpty();
+        return cpfAlunoTextField.getText().isEmpty() || dataTextField.getText().isEmpty()
+                || pesoTextField.getText().isEmpty();
     }
 
-    private Aluno criarAluno() {
-        Aluno aluno = new Aluno(null, null, null, 0, 0);
-        aluno.setCpf(cpfTextField.getText());
-        aluno.setNome(nomeTextField.getText());
-
+    private HistoricoPeso criarHistoricoPeso() {
+        String cpfAluno = cpfAlunoTextField.getText();
         SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");
+        Date data = null;
         try {
-            Date dataNascimento = formatoData.parse(dataNascimentoTextField.getText());
-            aluno.setDataNascimento(dataNascimento);
+            data = formatoData.parse(dataTextField.getText());
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(null, "Formato de data inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
+        double peso = Double.parseDouble(pesoTextField.getText());
 
-        aluno.setPeso(Double.parseDouble(pesoTextField.getText()));
-        aluno.setAltura(Double.parseDouble(alturaTextField.getText()));
-        return aluno;
+        return new HistoricoPeso(cpfAluno, data, peso);
     }
 
     private void limparCampos() {
-        cpfTextField.setText("");
-        nomeTextField.setText("");
-        dataNascimentoTextField.setText("");
+        cpfAlunoTextField.setText("");
+        dataTextField.setText("");
         pesoTextField.setText("");
-        alturaTextField.setText("");
     }
 
     private void voltarParaMainGUI() {
-        new AlunoGUI(); // Abre uma nova instância de MainGUI
-        dispose(); // Fecha a instância atual de InserirAlunoGUI
+        new HistoricoPesoGUI(); // Abre uma nova instância de MainGUI
+        dispose(); // Fecha a instância atual de InserirHistoricoPesoGUI
     }
 
     public static void main(String[] args) {
-        new InserirAlunoGUI();
+        new InserirHistoricoPesoGUI();
     }
 }

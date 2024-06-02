@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import dao.AlunoDAO;
-import gui.MainGUI;
+import gui.AlunoGUI;
 import modelo.Aluno;
 
 public class ConsultarAlunoGUI extends JFrame {
@@ -139,7 +139,7 @@ public class ConsultarAlunoGUI extends JFrame {
     }
 
     private void voltarParaMainGUI() {
-        new MainGUI(); // Abre uma nova instância de MainGUI
+        new AlunoGUI(); // Abre uma nova instância de MainGUI
         dispose(); // Fecha a instância atual de ConsultarAlunoGUI
     }
 
