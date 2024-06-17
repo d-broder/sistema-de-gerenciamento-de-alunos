@@ -27,5 +27,15 @@ Este é um projeto desenvolvido em Java que utiliza o SGBD MySQL para gerenciar 
 
 1. Clone o repositório para a sua máquina local.
 2. Importe o projeto em sua IDE de preferência.
-3. Configure a conexão com o banco de dados MySQL.
-4. Execute a aplicação e utilize a interface de usuário para gerenciar os alunos e seus históricos de peso.
+3. Na pasta "res" do projeto, insira o arquivo "config.properties".
+4. Abra o arquivo "config.properties" e configure-o com as informações do seu banco de dados MySQL, seguindo o exemplo abaixo:
+
+    ```
+    url=jdbc:mysql://localhost/nome_banco_dados
+    username=root
+    password=senha123
+    ```
+
+    Certifique-se de substituir "url", "username" e "password" pelos valores correspondentes ao seu ambiente de desenvolvimento.
+
+5. Execute a aplicação e utilize a interface de usuário para gerenciar os alunos e seus históricos de peso.

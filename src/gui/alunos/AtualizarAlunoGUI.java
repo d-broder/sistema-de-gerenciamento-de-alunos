@@ -146,32 +146,38 @@ public class AtualizarAlunoGUI extends JFrame {
             return;
         }
 
-        // Criar um objeto Aluno com os novos dados
-        Aluno aluno = new Aluno(null, null, null, 0, 0);
-        aluno.setNome(nomeTextField.getText().isEmpty() ? alunoAtual.getNome() : nomeTextField.getText());
+        // Atualizar o aluno atual com os novos dados
+        if (!nomeTextField.getText().isEmpty()) {
+            alunoAtual.setNome(nomeTextField.getText());
+        }
 
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         try {
-            Date novaDataNascimento = formato.parse(dataNascimentoTextField.getText());
-            aluno.setDataNascimento(novaDataNascimento);
+            if (!dataNascimentoTextField.getText().isEmpty()) {
+                Date novaDataNascimento = formato.parse(dataNascimentoTextField.getText());
+                alunoAtual.setDataNascimento(novaDataNascimento);
+            }
         } catch (ParseException ex) {
-            aluno.setDataNascimento(alunoAtual.getDataNascimento());
+            JOptionPane.showMessageDialog(null, "Formato de data inválido. Use dd/MM/yyyy.", "Erro",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         try {
-            double novoPeso = pesoTextField.getText().isEmpty() ? alunoAtual.getPeso()
-                    : Double.parseDouble(pesoTextField.getText());
-            double novaAltura = alturaTextField.getText().isEmpty() ? alunoAtual.getAltura()
-                    : Double.parseDouble(alturaTextField.getText());
-            aluno.setPeso(novoPeso);
-            aluno.setAltura(novaAltura);
+            if (!pesoTextField.getText().isEmpty()) {
+                double novoPeso = Double.parseDouble(pesoTextField.getText());
+                alunoAtual.setPeso(novoPeso);
+            }
+            if (!alturaTextField.getText().isEmpty()) {
+                double novaAltura = Double.parseDouble(alturaTextField.getText());
+                alunoAtual.setAltura(novaAltura);
+            }
         } catch (NumberFormatException ex) {
-            aluno.setPeso(alunoAtual.getPeso());
-            aluno.setAltura(alunoAtual.getAltura());
+            JOptionPane.showMessageDialog(null, "Peso e altura devem ser números válidos.", "Erro",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         // Atualizar o aluno usando AlunoDAO
-        alunoDAO.atualizar(aluno);
+        alunoDAO.atualizar(alunoAtual);
 
         // Exibindo uma mensagem de sucesso
         JOptionPane.showMessageDialog(null, "Aluno com CPF " + cpf + " atualizado com sucesso.", "Sucesso",

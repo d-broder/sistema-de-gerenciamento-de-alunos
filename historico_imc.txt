@@ -1,8 +1,0 @@
-Data: 02/06/2024 13:33:20
-ID: 2
-CPF: 12
-Nome: Dadazinho
-Peso: 121.0 kg
-IMC: 39,51
-Obesidade
-
